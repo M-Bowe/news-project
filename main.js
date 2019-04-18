@@ -34,7 +34,7 @@ function request(urlToRequest, contentNum) {
             line += "</div></div>";
             html += line;
           }
-          console.log(`URL: ${urlToRequest}, contentNum: ${contentNum}`);
+          console.log(`Content from URL: ${urlToRequest} loaded to tab ${contentNum}`);
           document.querySelector(`#content${contentNum}`).innerHTML = html;
         }
     });
