@@ -1,6 +1,9 @@
 //this forces javascript to conform to some rules, like declaring variables with var
 "use strict";
 $(document).ready(function () {
+  var visit = localStorage.getItem('lastVisit');
+  console.log(`Showing last date visited ${visit}`);
+  document.getElementById("lastVisit").innerHTML = visit;
   var urls = ["http://www.espn.com/espn/rss/news",
               "http://www.espn.com/espn/rss/nfl/news",
               "http://www.espn.com/espn/rss/nba/news",
@@ -34,8 +37,12 @@ function request(urlToRequest, contentNum) {
             line += "</div></div>";
             html += line;
           }
-          console.log(`Content from URL: ${urlToRequest} loaded to tab ${contentNum}`);
+          console.log(`Content from ${urlToRequest} loaded to tab ${contentNum}`);
           document.querySelector(`#content${contentNum}`).innerHTML = html;
         }
     });
 }
+window.addEventListener('beforeunload', function(e) {
+  var date = new Date();
+  localStorage.setItem('lastVisit', `Last visited: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`);
+});

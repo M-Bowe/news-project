@@ -31,11 +31,11 @@
   <div class="row">
     <div class="col-sm-4">
       <h2>Your Account</h2>
-      <h5>Login at the top to see your information...</h5>
+      <h5>Login at the top to see your favorites</h5>
 
+      <p id="lastVisit"></p>
       <!-- TODO: hook this into account information -->
       <div id="accountInfo" style="display:none">
-        <p id="lastVisit">Your last visit: </p>
         <h2>Favorite Stories</h2>
         <div id="favs">Your favorite stories show up here! Hit the star next to a story to add or remove it.</div>
       </div>
@@ -78,8 +78,8 @@
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Login / Create Account</h5>
-        <button type="button" class="close" data-dismiss="modal"></button>
+        <h5 class="modal-title" id="exampleModalLongTitle">Login or Create Account Here</h5>
+        <button type="button" class="close" data-dismiss="modal">x</button>
       </div>
       <div class="modal-body">
         <form id="login">
@@ -98,10 +98,10 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
 
         <!-- TODO: Hook this up to account information -->
-        <input type="submit" form="login" class="btn btn-primary">
+        <input type="submit" form="login" class="btn btn-primary" value="Login">
       </div>
     </div>
   </div>
