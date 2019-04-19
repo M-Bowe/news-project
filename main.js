@@ -15,6 +15,18 @@ $(document).ready(function () {
         request(urls[i], i);
     }
 });
+
+// TODO: Tie this selected news item to account storage
+$(document).on('click', '.fa-star', function() {
+  if ($(this).hasClass('far')){
+    console.log('Favorite added');
+    $(this).removeClass('far').addClass('fas');
+  } else {
+    console.log('Favorite removed');
+    $(this).removeClass('fas').addClass('far');
+  }
+});
+
 function request(urlToRequest, contentNum) {
     $.ajax({
         url: urlToRequest,
@@ -33,7 +45,7 @@ function request(urlToRequest, contentNum) {
             //present the item as HTML
             var line = '<div class="card"><div class="card-body">';
             line += '<h5 class="card-title">'+title+"</h5>";
-            line += '<p class="card-text"><i>'+pubDate+'</i> - <a href="'+link+'" target="_blank" class="btn btn-secondary">See original</a></p>';
+            line += '<p class="card-text" style="user-select:none"><i class="far fa-star"></i> <i>'+pubDate+'</i> - <a href="'+link+'" target="_blank" class="btn btn-secondary">See original</a></p>';
             line += "</div></div>";
             html += line;
           }
@@ -42,6 +54,8 @@ function request(urlToRequest, contentNum) {
         }
     });
 }
+
+// cache last visit on departure
 window.addEventListener('beforeunload', function(e) {
   var date = new Date();
   localStorage.setItem('lastVisit', `Last visited: ${date.toLocaleDateString()} ${date.toLocaleTimeString()}`);
