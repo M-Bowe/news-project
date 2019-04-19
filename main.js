@@ -91,6 +91,7 @@ function login() {
   $("#loginForm").modal('toggle');
   $("#loginButton").replaceWith(`<button type="button" id="logoutButton" class="btn btn-secondary" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>`);
   localStorage.setItem('activeUser', name);
+  $("#welcome").text(`Welcome back ${name}, enjoy your sports news!`);
   console.log('Login complete');
 }
 
@@ -102,6 +103,7 @@ function logout() {
   });
   $("#favs").empty();
   $("#logoutButton").replaceWith(`<button type="button" id="loginButton" class="btn btn-primary" data-toggle="modal" data-target="#loginForm"><i class="fas fa-sign-in-alt"></i> Login</button>`);
+  $("#welcome").text("Make sure to create an account to make the best of this dashboard!");
   console.log('Logout complete');
 }
 
