@@ -21,7 +21,7 @@
   <hr class="my-4">
   <p>Make sure to create an account to make the best of this dashboard!</p>
   <p class="lead">
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#loginForm">
+    <button type="button" id="loginButton" class="btn btn-primary" data-toggle="modal" data-target="#loginForm">
       <i class="fas fa-sign-in-alt"></i> Login
     </button>
   </p>
@@ -30,15 +30,13 @@
 <div class="container" style="margin-top:30px;margin-bottom:30px">
   <div class="row">
     <div class="col-sm-4">
-      <h2>Your Account</h2>
-      <h5>Login at the top to see your favorites</h5>
+      <h2>Your Account</h2><p id="lastVisit"></p>
 
-      <p id="lastVisit"></p>
-      <!-- TODO: hook this into account information -->
-      <div id="accountInfo" style="display:none">
-        <h2>Favorite Stories</h2>
-        <div id="favs">Your favorite stories show up here! Hit the star next to a story to add or remove it.</div>
-      </div>
+      <h5>Favorite Stories</h5>
+      Your favorite stories show up here!<br>
+      Hit the star next to a story to add or remove it.
+      <!-- TODO Hook this feature to account info to display favorites --> 
+      <div id="favs"></div>
       <hr class="d-sm-none">
     </div>
 
@@ -54,7 +52,6 @@
         <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#content5"><i class="fas fa-golf-ball"></i> Golf</a></li>
         <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#content6"><i class="fas fa-car"></i> Motorsports</a></li>
       </ul>
-      <!-- TODO: Add Favoriting feature and hook to account information -->
       <div class="tab-content">
         <div class="tab-pane active" id="content0">...</div>
         <div class="tab-pane" id="content1">...</div>
@@ -82,7 +79,7 @@
         <button type="button" class="close" data-dismiss="modal">x</button>
       </div>
       <div class="modal-body">
-        <form id="login">
+        <form id="login" onsubmit="login();return false">
           <div class="form-group row">
             <label for="colFormLabel" class="col-sm-2 col-form-label">Username</label>
             <div class="col-sm-10">
