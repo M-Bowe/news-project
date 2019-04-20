@@ -1,12 +1,18 @@
 //this forces javascript to conform to some rules, like declaring variables with var
 "use strict";
-
+var activeFavs = [];
 $(document).ready(function () {
   var visit = localStorage.getItem('lastVisit');
   console.log(`Showing last date visited ${visit}`);
   document.getElementById("lastVisit").innerHTML = visit;
-  localStorage.setItem('activeUser', '');
 
+  // Populate user sections with session info
+  var user = localStorage.getItem('activeUser');
+  if (user && user != '') {
+    $("#loginButton").replaceWith(`<button type="button" id="logoutButton" class="btn btn-secondary" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>`);
+    $("#welcome").text(`Welcome back ${name}, enjoy your sports news!`);
+    getFavorites();
+  }
   var urls = ["http://www.espn.com/espn/rss/news",
               "http://www.espn.com/espn/rss/nfl/news",
               "http://www.espn.com/espn/rss/nba/news",
@@ -19,16 +25,45 @@ $(document).ready(function () {
     }
 });
 
+// Called on page start and login to show user favorites
+function getFavorites() {
+  console.log('Getting favorites');
+  var favorites = localStorage.getItem('activeFavorites');
+  if (favorites && favorites != '[]') {
+    var json = JSON.parse(favorites);
+    for (var fav in json) {
+      console.log(json[fav]);
+      $("#favs").append(json[fav]);
+    }
+    activeFavs = json;
+  } else { console.log('No pre-existing favorites to be shown') }
+}
+
 // TODO: Tie this selected news item to account storage
 $(document).on('click', '.fa-star', function() {
-  if (localStorage.getItem('activeUser') != '') {
-    if ($(this).hasClass('far')){
-      console.log('Favorite added');
-      console.log($(this).parents()[2]);
+  if (localStorage.getItem('activeUser') && localStorage.getItem('activeUser') != '') {
+    var card = $(this).parents()[2];
+    var parent = ($(card).parent());
+
+    // Add favorite
+    if ($(this).hasClass('far')) {
+      $("#favs").append(card);
       $(this).removeClass('far').addClass('fas');
-    } else {
-      console.log('Favorite removed');
+      activeFavs.unshift(`${$(card).prop('outerHTML')}`);
+      console.log('Favorite added');
+    }
+    else { // Remove favorite
+      // Remove item card from Favorites array
+      var newArray = [];
+      var newArray = activeFavs.filter(function(e) {
+        return $(e).prop('outerHTML') != $(card).prop('outerHTML');
+      });
+      activeFavs = newArray.slice();
+      console.log(activeFavs);
       $(this).removeClass('fas').addClass('far');
+      var originalTab = card.classList[1];
+      $(`#${originalTab}`).append(card);
+      console.log('Favorite removed');
     }
   } else { alert('Log in to favorite this item!') }
 });
@@ -50,7 +85,7 @@ function request(urlToRequest, contentNum) {
             var pubDate = newsItem.querySelector("pubDate").firstChild.nodeValue;
 
             // Construct item as HTML
-            var line = '<div class="card"><div class="card-body">';
+            var line = `<div class="card content${contentNum}"><div class="card-body">`;
             line += '<h5 class="card-title">'+title+"</h5>";
             line += '<p class="card-text" style="user-select:none"><i class="far fa-star"></i> <i>'+pubDate+'</i> - <a href="'+link+'" target="_blank" class="btn btn-secondary">See original</a></p>';
             line += "</div></div>";
@@ -68,13 +103,14 @@ function login() {
   var password = $("#password").val();
   $("#password").val('');
   $("#password").removeClass('is-invalid');
-  console.log(`Attempting login of username ${name} and password ${password}`);
-
   var user = JSON.parse(JSON.parse(localStorage.getItem(name)));
+  console.log(user);
   if (user) {
     console.log(`User exists. Password ${user["password"]}, favorites ${user["favorites"]}`);
     if (password == user["password"]) {
       console.log('Correct password, access granted');
+      localStorage.setItem('activeFavorites', JSON.stringify(user["favorites"]));
+      getFavorites();
     }
     else {
       $("#password").addClass('is-invalid');
@@ -90,20 +126,27 @@ function login() {
 
   $("#loginForm").modal('toggle');
   $("#loginButton").replaceWith(`<button type="button" id="logoutButton" class="btn btn-secondary" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>`);
-  localStorage.setItem('activeUser', name);
   $("#welcome").text(`Welcome back ${name}, enjoy your sports news!`);
+  localStorage.setItem('activeUser', name);
+  localStorage.setItem('activePassword', password);
   console.log('Login complete');
 }
 
 // Sign out of account, stop displaying info, and revert view
+// TODO: convert activeFavorites to user's favorites on logout
 function logout() {
+  var userJson = `{"password":"${localStorage.getItem('activePassword')}", "favorites":${JSON.stringify(activeFavs)}}`;
+  localStorage.setItem((localStorage.getItem('activeUser')), JSON.stringify(userJson));
+  console.log('User info cached');
+
   localStorage.setItem('activeUser', '');
-  $(".fa-star").each(function() {
-    $(this).removeClass('fas').addClass('far');
-  });
+  localStorage.setItem('activePassword', '');
+  localStorage.setItem('activeFavorites', '[]');
+  $(".fa-star").each(function() { $(this).removeClass('fas').addClass('far') });
   $("#favs").empty();
   $("#logoutButton").replaceWith(`<button type="button" id="loginButton" class="btn btn-primary" data-toggle="modal" data-target="#loginForm"><i class="fas fa-sign-in-alt"></i> Login</button>`);
   $("#welcome").text("Make sure to create an account to make the best of this dashboard!");
+  console.log('Session info reset. Welcome, Login, and Favorites sections reset');
   console.log('Logout complete');
 }
 
